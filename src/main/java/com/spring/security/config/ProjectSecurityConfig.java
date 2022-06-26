@@ -1,0 +1,89 @@
+package com.spring.security.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+public class ProjectSecurityConfig {
+	/**
+	 * From Spring Security 5.7, the WebSecurityConfigurerAdapter is deprecated to encourage users
+	 * to move towards a component-based security configuration. It is recommended to create a bean
+	 * of type SecurityFilterChain for security related configurations.
+	 * @param http
+	 * @return SecurityFilterChain
+	 * @throws Exception
+	 */
+	@Bean
+	SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+		/**
+		 * Default configurations which will secure all the requests
+		 */
+		/*((ExpressionUrlAuthorizationConfigurer.AuthorizedUrl)http.authorizeRequests().anyRequest()).
+				authenticated();
+		http.formLogin();
+		http.httpBasic();
+		return (SecurityFilterChain)http.build();*/
+		
+		/**
+		 * Custom configurations as per our requirement
+		 */
+		http.authorizeHttpRequests( (auth)->auth
+				.antMatchers("/myAccount","/myBalance","/myLoans","/myCards").authenticated()
+				.antMatchers("/notices","/contact").permitAll()
+		).httpBasic(Customizer.withDefaults());
+		return http.build();
+		
+		/**
+		 * Configuration to deny all the requests
+		 */
+		/*http.authorizeHttpRequests( (auth)->auth
+				.anyRequest().denyAll())
+				.httpBasic(Customizer.withDefaults());
+		return http.build();*/
+
+		/**
+		 * Configuration to permit all the requests
+		 */
+		/*http.authorizeHttpRequests( (auth)->auth
+						.anyRequest().permitAll())
+				.httpBasic(Customizer.withDefaults());
+		return http.build();*/
+	}	
+	/*In Memeory Database*/
+	/*
+	@Bean
+    public InMemoryUserDetailsManager userDetailsService() {
+        //InMemoryUserDetailsManager userDetailsService = new InMemoryUserDetailsManager();
+        UserDetails admin = User.withUsername("admin").password("12345").authorities("admin").build();
+        UserDetails user = User.withUsername("user").password("12345").authorities("read").build();
+        List<UserDetails> userDetails = new ArrayList<>();
+        userDetails.add(user);
+        userDetails.add(admin);
+        return new InMemoryUserDetailsManager(userDetails);
+        //userDetailsService.createUser(admin);
+        //userDetailsService.createUser(user);
+        //return userDetailsService;
+	}*/
+	/*JDBC Database*/
+	/*
+	@Bean
+    public UserDetailsService userDetailsService(DataSource dataSource) {
+	  return new JdbcUserDetailsManager(dataSource);
+    }
+	*/
+	/**
+     * NoOpPasswordEncoder is not recommended for production usage.
+     * Use only for non-prod.
+     *
+     * @return
+     */
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return NoOpPasswordEncoder.getInstance();
+    }
+}
