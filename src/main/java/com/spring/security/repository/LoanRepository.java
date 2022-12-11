@@ -5,11 +5,9 @@ import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import com.spring.security.entity.AccountUser;
+import com.spring.security.model.Loans;
 
 @Repository
-public interface UserRepository extends CrudRepository<AccountUser, Long>{
-	
-	List<AccountUser> findByEmail(String email);
-
+public interface LoanRepository extends CrudRepository<Loans, Long>{
+	List<Loans> findByCustomerIdOrderByStartDtDesc(int customerId);
 }

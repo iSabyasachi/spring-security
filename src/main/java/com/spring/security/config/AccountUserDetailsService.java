@@ -8,24 +8,24 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.spring.security.entity.AccountUser;
-import com.spring.security.model.AccountUserDetails;
-import com.spring.security.repository.UserRepository;
+import com.spring.security.model.Customer;
+import com.spring.security.model.SecurityCustomer;
+import com.spring.security.repository.CustomerRepository;
 
 @Service
 public class AccountUserDetailsService implements UserDetailsService {
 
 	@Autowired
-	private UserRepository userRepository;
+	private CustomerRepository customerRepository;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		List<AccountUser> users = userRepository.findByEmail(username);
-		if (users.size() == 0) {
+		List<Customer> customer = customerRepository.findByEmail(username);
+		if (customer.size() == 0) {
 			throw new UsernameNotFoundException("User details not found for the user : " + username);
 		}
 
-		return new AccountUserDetails(users.get(0));
+		return new SecurityCustomer(customer.get(0));
 	}
 
 }
